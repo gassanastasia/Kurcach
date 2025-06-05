@@ -100,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             correlationPlot.src = data.correlation_plot;
             predictionPlot.src = data.prediction_plot;
+            displayPredictionsTable(data);
             fileResult.style.display = 'block';
         } catch (error) {
             fileResult.innerHTML = `
@@ -107,6 +108,42 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
     });
+    function displayPredictionsTable(data) {
+        const resultsContainer = document.getElementById('file-result');
+    
+        // Создаем HTML для таблицы
+        let tableHTML = `
+            <h3>Результаты прогнозирования</h3>
+            <div class="table-responsive">
+                <table class="predictions-table">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Прогноз продаж ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        // Добавляем строки с данными и прогнозами
+        for (let i = 0; i < data.actual.length; i++) {
+            tableHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${data.predictions[i].toFixed(2)}</td>
+                </tr>
+            `;
+        }
+        
+        tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+        
+        // Добавляем таблицу в контейнер результатов
+        resultsContainer.innerHTML += tableHTML;
+    }
 
     // Активируем вкладку по умолчанию
     valueBtn.click();
