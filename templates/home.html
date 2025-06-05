@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ рекламных затрат</title>
+    <link href="../static/css/index.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Анализ зависимости продаж от рекламных затрат</h1>
+        
+        <div class="container-buttons">
+            <button id="value-btn" class="active">Значение</button>
+            <button id="file-btn">Файл</button>
+        </div>
+
+        <div id="value-section" class="section">
+            <form id="value-form">
+                <div class="input-group">
+                    <label for="tv">ТВ бюджет ($):</label>
+                    <input type="number" id="tv" step="0.01" min="0" required>
+                </div>
+                <div class="input-group">
+                    <label for="radio">Радио бюджет ($):</label>
+                    <input type="number" id="radio" step="0.01" min="0" required>
+                </div>
+                <div class="input-group">
+                    <label for="newspaper">Газеты бюджет ($):</label>
+                    <input type="number" id="newspaper" step="0.01" min="0" required>
+                </div>
+                <button type="submit">Получить предсказание</button>
+            </form>
+            <div id="value-result" class="result"></div>
+        </div>
+
+        <div id="file-section" class="section" style="display:none">
+            <form id="file-form">
+                <div class="file-upload">
+                    <input type="file" id="file-input" accept=".csv,.xlsx" required>
+                    <label for="file-input">
+                        <span>Выберите файл (CSV/XLSX)</span>
+                        <br>
+                        <small>Поддерживаемые форматы: CSV XLSX</small>
+                    </label>
+                </div>
+                <button type="submit">Анализировать</button>
+            </form>
+            <div id="file-result" class="result">
+                <div class="plots">
+                    <img id="correlation-plot">
+                    <img id="prediction-plot">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/index.js"></script>
+</body>
+</html>
