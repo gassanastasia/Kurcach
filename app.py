@@ -12,7 +12,7 @@ import requests
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
+load_dotenv(".env")
 # Загрузка модели
 try:
     with open('linear_model.pkl', 'rb') as f:
@@ -22,13 +22,11 @@ except Exception as e:
     print(f"Ошибка загрузки модели: {e}")
     model = None
 def get_exchange_rate():
-    try:
-        api_key = os.getenv('EXCHANGE_RATE_API_KEY')
-        base_url = os.getenv('EXCHANGE_RATE_SITE_URL', 'https://v6.exchangerate-api.com/v6')
-        response = requests.get(f"{base_url}/{api_key}/latest/USD")
-        return response.json()['conversion_rates']['RUB']
-    except:
-        return 90.0
+    api_key = os.getenv('EXCHANGE_RATE_API_KEY')
+    base_url = os.getenv('EXCHANGE_RATE_SITY_URL')
+    response = requests.get(f"{base_url}/{api_key}/latest/USD")
+    return response.json()['conversion_rates']['RUB']
+    
 def create_correlation_plot(df):
     sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt=".2f")
     plt.title("Матрица корреляции")
