@@ -74,7 +74,11 @@ def predict():
                 df.rename({'TV':'Телевиденье', 'Radio':'Радио', 'Newspaper':'Газета','Sales':'Продажа'}, axis=1, inplace=True)
                 X = df[['Телевиденье', 'Радио', 'Газета']]
                 predictions = model.predict(X)
-                
+                df["Прогноз продаж"] = predictions
+                result_filename = f"result_{file.filename}"
+                result_filepath = os.path.join(app.config['UPLOAD_FOLDER'], result_filename)
+                df.to_csv(result_filepath, index=False)
+
                 corr_plot = create_correlation_plot(df)
                 pred_plot = create_prediction_plot(df['Продажа'], predictions)
                 
@@ -83,7 +87,8 @@ def predict():
                     "actual": df['Продажа'].tolist(),
                     "correlation_plot": f"data:image/png;base64,{corr_plot}",
                     "prediction_plot": f"data:image/png;base64,{pred_plot}",
-                    "columns": df.columns.tolist()
+                    "columns": df.columns.tolist(),
+                    "result_file": result_filename
                 })
             
         else:
@@ -105,6 +110,9 @@ def predict():
                             "prediction_rub": float(prediction[0]) * float(exchange_rate),
                             "exchange_rate": exchange_rate})
 
+@app.route('/download/<filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):

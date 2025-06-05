@@ -101,6 +101,14 @@ document.addEventListener('DOMContentLoaded', function() {
             correlationPlot.src = data.correlation_plot;
             predictionPlot.src = data.prediction_plot;
             displayPredictionsTable(data);
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.textContent = 'Скачать результаты';
+            downloadBtn.className = 'download-btn';
+            downloadBtn.onclick = () => downloadResults(data.result_file);
+            const resultsContainer = document.getElementById('file-result');
+            resultsContainer.appendChild(downloadBtn);
+
             fileResult.style.display = 'block';
         } catch (error) {
             fileResult.innerHTML = `
@@ -108,8 +116,17 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
     });
+    // Функция для скачивания файла с результатами
+    function downloadResults(filename) {
+        window.location.href = `/download/${filename}`;
+    }
     function displayPredictionsTable(data) {
         const resultsContainer = document.getElementById('file-result');
+
+        resultsContainer.innerHTML = `
+            <img id="correlation-plot" class="plot-image">
+            <img id="prediction-plot" class="plot-image">
+        `;
     
         // Создаем HTML для таблицы
         let tableHTML = `
