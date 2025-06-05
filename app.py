@@ -8,6 +8,8 @@ import base64
 import os
 from dotenv import load_dotenv
 import requests
+import matplotlib
+matplotlib.use('Agg')  # Установка бэкенда без GUI
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -28,6 +30,7 @@ def get_exchange_rate():
     return response.json()['conversion_rates']['RUB']
     
 def create_correlation_plot(df):
+    plt.figure()
     sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt=".2f")
     plt.title("Матрица корреляции")
     buf = io.BytesIO()
@@ -37,6 +40,7 @@ def create_correlation_plot(df):
     return base64.b64encode(buf.read()).decode('utf-8')
 
 def create_prediction_plot(actual, predicted):
+    plt.figure()
     plt.scatter(actual, predicted, color='#D81B60')
     plt.plot([actual.min(), actual.max()], [actual.min(), actual.max()], 'k--')
     plt.xlabel("Фактические продажи")

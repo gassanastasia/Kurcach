@@ -98,16 +98,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const data = await response.json();
-            correlationPlot.src = data.correlation_plot;
-            predictionPlot.src = data.prediction_plot;
+
+            fileResult.innerHTML = `
+                <div class="plots-container">
+                    <img id="correlation-plot" class="plot-image" src="${data.correlation_plot}">
+                    <img id="prediction-plot" class="plot-image" src="${data.prediction_plot}">
+                </div>
+                <div id="predictions-table-container"></div>
+                <button class="download-btn">Скачать результаты CSV</button>
+            `;
+
             displayPredictionsTable(data);
 
-            const downloadBtn = document.createElement('button');
-            downloadBtn.textContent = 'Скачать результаты';
-            downloadBtn.className = 'download-btn';
-            downloadBtn.onclick = () => downloadResults(data.result_file);
-            const resultsContainer = document.getElementById('file-result');
-            resultsContainer.appendChild(downloadBtn);
+            document.querySelector('.download-btn').addEventListener('click', () => {
+                downloadResults(data.result_file);
+            });
 
             fileResult.style.display = 'block';
         } catch (error) {
@@ -121,12 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = `/download/${filename}`;
     }
     function displayPredictionsTable(data) {
-        const resultsContainer = document.getElementById('file-result');
-
-        resultsContainer.innerHTML = `
-            <img id="correlation-plot" class="plot-image">
-            <img id="prediction-plot" class="plot-image">
-        `;
+        const container = document.getElementById('predictions-table-container');
     
         // Создаем HTML для таблицы
         let tableHTML = `
@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <thead>
                         <tr>
                             <th>№</th>
+                            <th>Фактические продажи ($)</th>
                             <th>Прогноз продаж ($)</th>
                         </tr>
                     </thead>
@@ -147,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tableHTML += `
                 <tr>
                     <td>${i + 1}</td>
+                    <td>${data.actual[i].toFixed(2)}</td>
                     <td>${data.predictions[i].toFixed(2)}</td>
                 </tr>
             `;
@@ -159,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         // Добавляем таблицу в контейнер результатов
-        resultsContainer.innerHTML += tableHTML;
+        container.innerHTML = tableHTML;
     }
 
     // Активируем вкладку по умолчанию
