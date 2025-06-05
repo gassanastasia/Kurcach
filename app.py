@@ -23,7 +23,7 @@ except Exception as e:
     model = None
 def get_exchange_rate():
     api_key = os.getenv('EXCHANGE_RATE_API_KEY')
-    base_url = os.getenv('EXCHANGE_RATE_SITY_URL')
+    base_url = os.getenv('EXCHANGE_RATE_URL')
     response = requests.get(f"{base_url}/{api_key}/latest/USD")
     return response.json()['conversion_rates']['RUB']
     
